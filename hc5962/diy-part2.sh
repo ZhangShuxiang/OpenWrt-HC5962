@@ -13,10 +13,8 @@ sed -i '/list listen_https	\[::\]:443/a\	list listen_https	\[::\]:8443' package/
 echo de28fd16e9a0e0f14553e3f8d0bd0825>.vermagic
 sed -i 's/grep.*vermagic/cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/g' include/kernel-defaults.mk
 #
-#sed -i 's/htmode=HT20/htmode=HT40/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i 's/set wireless.${name}.disabled=1/set wireless.${name}.disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i 's/set wireless.default_${name}.encryption=none/set wireless.default_${name}.encryption=sae-mixed/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-sed -i '/set wireless.default_${name}.encryption/a\			set wireless.default_${name}.key=56781234' package/kernel/mac80211/files/lib/wifi/mac80211.sh
-#
+sed -i 's/disabled=1/disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i 's/encryption=none/encryption=sae-mixed\n			set wireless.default_${name}.key=56781234/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
+
 #sed -i '/option disable_ipv6/a\	option flow_offloading_hw	1' package/network/config/firewall/files/firewall.config
 #sed -i '/option disable_ipv6/a\	option flow_offloading	1' package/network/config/firewall/files/firewall.config
