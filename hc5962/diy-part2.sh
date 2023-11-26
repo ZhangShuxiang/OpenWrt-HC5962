@@ -10,7 +10,6 @@ sed -i '/list listen_http	0.0.0.0:80/a\	list listen_http	0.0.0.0:8000' package/n
 sed -i '/list listen_http	\[::\]:80/a\	list listen_http	\[::\]:8000' package/network/services/uhttpd/files/uhttpd.config
 sed -i '/list listen_https	0.0.0.0:443/a\	list listen_https	0.0.0.0:8443' package/network/services/uhttpd/files/uhttpd.config
 sed -i '/list listen_https	\[::\]:443/a\	list listen_https	\[::\]:8443' package/network/services/uhttpd/files/uhttpd.config
-echo 9c242f353867f49a96054ff8c9f2c460>.vermagic
 sed -i 's/grep.*vermagic/cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/g' include/kernel-defaults.mk
 #
 sed -i 's/disabled=1/disabled=0/g' package/kernel/mac80211/files/lib/wifi/mac80211.sh
