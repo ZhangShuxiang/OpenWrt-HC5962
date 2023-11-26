@@ -42,7 +42,7 @@ jobs:
     - name: Load custom configuration
       run: |
         [ -e $CONF_FILE ] && cp $CONF_FILE openwrt/.config
-        echo 9c242f353867f49a96054ff8c9f2c460>.vermagic
+        echo 9c242f353867f49a96054ff8c9f2c460> openwrt/.vermagic
         cd openwrt && chmod +x $GITHUB_WORKSPACE/$DIY_P2_SH && $GITHUB_WORKSPACE/$DIY_P2_SH
 #-----------------------------------------------#
     - name: Download package
