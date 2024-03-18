@@ -58,7 +58,7 @@ jobs:
       id: package
       run: |
         cd openwrt
-        [ -e $CONF_FILE ] && cp $GITHUB_WORKSPACE/$CONF_FILE .config
+        cp $GITHUB_WORKSPACE/$CONF_FILE $GITHUB_WORKSPACE/openwrt/.config
         make defconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
