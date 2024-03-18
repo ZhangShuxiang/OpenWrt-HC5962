@@ -44,7 +44,7 @@ jobs:
         df -hT $PWD
         git clone $REPO_URL -b $REPO_TAG $GITHUB_WORKSPACE/openwrt
 #-----------------------------------------------#
-    - name: Load custom feeds
+    - name: Load custom diy1
       run: cd openwrt && chmod +x $GITHUB_WORKSPACE/$DIY_P1_SH && $GITHUB_WORKSPACE/$DIY_P1_SH
 #-----------------------------------------------#
     - name: Update feeds
@@ -53,20 +53,20 @@ jobs:
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
 #-----------------------------------------------#
-    - name: Load custom configuration
-      run: |
-        [ -e $CONF_FILE ] && cp $CONF_FILE openwrt/.config
-        echo 24c201741aa3cde887b045d07c2eabc1> openwrt/.vermagic
-        cd openwrt && chmod +x $GITHUB_WORKSPACE/$DIY_P2_SH && $GITHUB_WORKSPACE/$DIY_P2_SH
-#-----------------------------------------------#
     - name: Download package
       id: package
       run: |
         cd openwrt
+        [ -e $CONF_FILE ] && cp $GITHUB_WORKSPACE/$CONF_FILE .config
         make defconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
+#-----------------------------------------------#
+    - name: Load custom diy2
+      run: |
+        echo 24c201741aa3cde887b045d07c2eabc1> openwrt/.vermagic
+        cd openwrt && chmod +x $GITHUB_WORKSPACE/$DIY_P2_SH && $GITHUB_WORKSPACE/$DIY_P2_SH
 #-----------------------------------------------#
     - name: Compile the firmware
       id: compile
