@@ -11,7 +11,7 @@ sed -i '/list listen_https	0.0.0.0:443/a\	list listen_https	0.0.0.0:8443' packag
 sed -i '/list listen_https	\[::\]:443/a\	list listen_https	\[::\]:8443' package/network/services/uhttpd/files/uhttpd.config
 sed -i 's/grep.*vermagic/cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/g' include/kernel-defaults.mk
 #
-sed -i 's/REJECT/ACCEPT/g' package/network/config/firewall4/root/etc/config/firewall
+sed -i 's/REJECT/ACCEPT/g' package/firewall4/root/etc/config/firewall
 # mkdir -p ./package/network/config/firewall4/files/
 # cp ./package/network/config/firewall/files/firewall.config ./package/network/config/firewall4/files/firewall.config
 # sed -i "/define Package\/firewall4\/install/i\		\$(INSTALL_CONF) \.\/files\/firewall\.config \$(1)\/etc\/config\/firewall" package/network/config/firewall4/Makefile
