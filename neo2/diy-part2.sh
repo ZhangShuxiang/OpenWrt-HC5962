@@ -10,7 +10,7 @@ sed -i '/list listen_http	\[::\]:80/a\	list listen_http	\[::\]:8000' package/net
 sed -i '/list listen_https	0.0.0.0:443/a\	list listen_https	0.0.0.0:8443' package/network/services/uhttpd/files/uhttpd.config
 sed -i '/list listen_https	\[::\]:443/a\	list listen_https	\[::\]:8443' package/network/services/uhttpd/files/uhttpd.config
 sed -i 's/grep.*vermagic/cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/g' include/kernel-defaults.mk
-sed -i "/define Package\/firewall4\/install/a\	cp -f $(TOPDIR)\/firewall $(PKG_BUILD_DIR)\/root\/etc\/config\/firewall" package/network/config/firewall4/Makefile
+sed -i "/define Package\/firewall4\/install/a\	cp -f \$(TOPDIR)\/firewall \$(PKG_BUILD_DIR)\/root\/etc\/config\/firewall" package/network/config/firewall4/Makefile
 #
 # sed -i 's/REJECT/ACCEPT/g' package/firewall4/root/etc/config/firewall
 # mkdir -p ./package/network/config/firewall4/files/
