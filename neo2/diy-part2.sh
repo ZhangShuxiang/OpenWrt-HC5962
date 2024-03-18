@@ -11,11 +11,11 @@ sed -i '/list listen_https	0.0.0.0:443/a\	list listen_https	0.0.0.0:8443' packag
 sed -i '/list listen_https	\[::\]:443/a\	list listen_https	\[::\]:8443' package/network/services/uhttpd/files/uhttpd.config
 sed -i 's/grep.*vermagic/cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/g' include/kernel-defaults.mk
 #
-sed -i 's/REJECT/ACCEPT/g' package/network/config/firewall/files/firewall.config
+sed -i 's/REJECT/ACCEPT/g' package/firewall4/root/etc/config/firewall
 # mkdir -p ./package/network/config/firewall4/files/
 # cp ./package/network/config/firewall/files/firewall.config ./package/network/config/firewall4/files/firewall.config
 # sed -i "/define Package\/firewall4\/install/i\		\$(INSTALL_CONF) \.\/files\/firewall\.config \$(1)\/etc\/config\/firewall" package/network/config/firewall4/Makefile
 # sed -i "/define Package\/firewall4\/install/i\		\$(INSTALL_DIR) \$(1)\/etc\/config\/" package/network/config/firewall4/Makefile
 #
-sed -i 's/static/dhcp/g' package/base-files/files/lib/functions/uci-defaults.sh
-# sed -i 's/ucidef_set_interface_lan \"eth0\"/ucidef_set_interface_wan \"eth0\"/g' target/linux/sunxi/base-files/etc/board.d/02_network
+# sed -i 's/static/dhcp/g' package/base-files/files/lib/functions/uci-defaults.sh
+sed -i 's/ucidef_set_interface_lan \"eth0\"/ucidef_set_interface_wan \"eth0\"/g' target/linux/sunxi/base-files/etc/board.d/02_network
