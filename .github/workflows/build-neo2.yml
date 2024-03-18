@@ -17,6 +17,7 @@ env:
   REPO_URL: https://github.com/immortalwrt/immortalwrt.git
   REPO_TAG: v23.05.1
   CONF_FILE: neo2/neo2.config
+  FIRE_FILE: neo2/firewall
   DIY_P1_SH: neo2/diy-part1.sh
   DIY_P2_SH: neo2/diy-part2.sh
 
@@ -66,6 +67,7 @@ jobs:
     - name: Load custom diy2
       run: |
         echo 24c201741aa3cde887b045d07c2eabc1> openwrt/.vermagic
+        cp $GITHUB_WORKSPACE/$FIRE_FILE openwrt/firewall
         cd openwrt && chmod +x $GITHUB_WORKSPACE/$DIY_P2_SH && $GITHUB_WORKSPACE/$DIY_P2_SH
 #-----------------------------------------------#
     - name: Compile the firmware
