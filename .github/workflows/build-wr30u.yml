@@ -7,6 +7,7 @@ env:
   REPO_URL: https://github.com/immortalwrt/immortalwrt.git
   REPO_TAG: v23.05.4
   CONF_FILE: wr30u/wr30u.config
+  DTSI_FILE: wr30u/mt7981b-xiaomi-mi-router-common.dtsi
   DIY_P1_SH: wr30u/diy-part1.sh
   DIY_P2_SH: wr30u/diy-part2.sh
 #------------------#
@@ -41,6 +42,7 @@ jobs:
     - name: Load custom configuration
       run: |
         [ -e $CONF_FILE ] && cp $CONF_FILE openwrt/.config
+        [ -e $DTSI_FILE ] && cp $DTSI_FILE openwrt/target/linux/mediatek/dts/
         echo d024313b339f6a16c640db924eb57f35> openwrt/.vermagic
         cd openwrt && chmod +x $GITHUB_WORKSPACE/$DIY_P2_SH && $GITHUB_WORKSPACE/$DIY_P2_SH
 #-----------------------------------------------#
