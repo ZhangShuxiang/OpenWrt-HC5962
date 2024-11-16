@@ -41,8 +41,8 @@ jobs:
 #-----------------------------------------------#
     - name: Load custom configuration
       run: |
-        [ -e $CONF_FILE ] && cp $CONF_FILE openwrt/.config
-        [ -e $DTSI_FILE ] && cp $DTSI_FILE openwrt/target/linux/mediatek/dts/
+        [ -e $CONF_FILE ] && cp -f $CONF_FILE openwrt/.config
+        [ -e $DTSI_FILE ] && cp -f $DTSI_FILE openwrt/target/linux/mediatek/dts/
         echo d024313b339f6a16c640db924eb57f35> openwrt/.vermagic
         cd openwrt && chmod +x $GITHUB_WORKSPACE/$DIY_P2_SH && $GITHUB_WORKSPACE/$DIY_P2_SH
 #-----------------------------------------------#
