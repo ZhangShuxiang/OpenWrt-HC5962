@@ -43,7 +43,7 @@ jobs:
         rm -rf openwrt/target/linux/mediatek/*
         cp -rf immortalwrt/target/linux/mediatek/* openwrt/target/linux/mediatek/
         [ -e $CONF_FILE ] && cp -f $CONF_FILE openwrt/.config
-        [ -e $CONF_FILE2 ] && cp -f $CONF_FILE openwrt/target/linux/mediatek/filogic/base-files/etc/board.d/
+        [ -e $CONF_FILE2 ] && cp -f $CONF_FILE2 openwrt/target/linux/mediatek/filogic/base-files/etc/board.d/
         [ -e $DTSI_FILE1 ] && cp -f $DTSI_FILE1 openwrt/target/linux/mediatek/files-6.6/arch/arm64/boot/dts/mediatek/
         [ -e $DTSI_FILE2 ] && cp -f $DTSI_FILE2 openwrt/target/linux/mediatek/dts/
         [ -e $DTSI_FILE3 ] && cp -f $DTSI_FILE3 openwrt/target/linux/mediatek/dts/
