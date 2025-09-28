@@ -4,10 +4,13 @@ on:
   workflow_dispatch:
 #------------------#
 env:
-  REPO_URL: https://github.com/immortalwrt/immortalwrt.git
-  REPO_TAG: v23.05.4
+  REPO_URL: https://github.com/openwrt/openwrt.git
+  REPO_TAG: v24.10.3
   CONF_FILE: wr30u/wr30u.config
-  DTSI_FILE: wr30u/mt7981b-xiaomi-mi-router-common.dtsi
+  CONF_FILE2: wr30u/02_network
+  DTSI_FILE1: wr30u/mt7981.dtsi
+  DTSI_FILE2: wr30u/mt7981b-xiaomi-mi-router-common.dtsi
+  DTSI_FILE3: wr30u/mt7981b-xiaomi-mi-router-wr30u.dtsi
   DIY_P1_SH: wr30u/diy-part1.sh
   DIY_P2_SH: wr30u/diy-part2.sh
 #------------------#
@@ -33,9 +36,19 @@ jobs:
     - name: Clone source code
       run: |
        git clone $REPO_URL -b $REPO_TAG $GITHUB_WORKSPACE/openwrt
+       git clone https://github.com/padavanonly/immortalwrt-mt798x-6.6.git $GITHUB_WORKSPACE/immortalwrt
 #-----------------------------------------------#
     - name: Load custom feeds
-      run: cd openwrt && chmod +x $GITHUB_WORKSPACE/$DIY_P1_SH && $GITHUB_WORKSPACE/$DIY_P1_SH
+      run:  |
+        rm -rf openwrt/target/linux/mediatek/*
+        cp -rf immortalwrt/target/linux/mediatek/* openwrt/target/linux/mediatek/
+        [ -e $CONF_FILE ] && cp -f $CONF_FILE openwrt/.config
+        [ -e $CONF_FILE2 ] && cp -f $CONF_FILE openwrt/target/linux/mediatek/filogic/base-files/etc/board.d/
+        [ -e $DTSI_FILE1 ] && cp -f $DTSI_FILE1 openwrt/target/linux/mediatek/files-6.6/arch/arm64/boot/dts/mediatek/
+        [ -e $DTSI_FILE2 ] && cp -f $DTSI_FILE2 openwrt/target/linux/mediatek/dts/
+        [ -e $DTSI_FILE3 ] && cp -f $DTSI_FILE3 openwrt/target/linux/mediatek/dts/
+        echo d024313b339f6a16c640db924eb57f35> openwrt/.vermagic
+        cd openwrt && chmod +x $GITHUB_WORKSPACE/$DIY_P1_SH && $GITHUB_WORKSPACE/$DIY_P1_SH
 #-----------------------------------------------#
     - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
@@ -45,9 +58,6 @@ jobs:
 #-----------------------------------------------#
     - name: Load custom configuration
       run: |
-        [ -e $CONF_FILE ] && cp -f $CONF_FILE openwrt/.config
-        [ -e $DTSI_FILE ] && cp -f $DTSI_FILE openwrt/target/linux/mediatek/dts/
-        echo d024313b339f6a16c640db924eb57f35> openwrt/.vermagic
         cd openwrt && chmod +x $GITHUB_WORKSPACE/$DIY_P2_SH && $GITHUB_WORKSPACE/$DIY_P2_SH
 #-----------------------------------------------#
     - name: Download package
