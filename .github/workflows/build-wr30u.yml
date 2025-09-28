@@ -47,7 +47,7 @@ jobs:
         [ -e $DTSI_FILE1 ] && cp -f $DTSI_FILE1 openwrt/target/linux/mediatek/files-6.6/arch/arm64/boot/dts/mediatek/
         [ -e $DTSI_FILE2 ] && cp -f $DTSI_FILE2 openwrt/target/linux/mediatek/dts/
         [ -e $DTSI_FILE3 ] && cp -f $DTSI_FILE3 openwrt/target/linux/mediatek/dts/
-        mv openwrt/target/linux/generic/hack-6.6/780-usb-net-MeigLink_modem_support.patch openwrt/target/linux/generic/hack-6.6/780-usb-net-MeigLink_modem_support.patch.disabled
+        rm openwrt/target/linux/generic/hack-6.6/780-usb-net-MeigLink_modem_support.patch*
         echo d024313b339f6a16c640db924eb57f35> openwrt/.vermagic
         cd openwrt && chmod +x $GITHUB_WORKSPACE/$DIY_P1_SH && $GITHUB_WORKSPACE/$DIY_P1_SH
 #-----------------------------------------------#
