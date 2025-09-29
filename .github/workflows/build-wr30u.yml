@@ -8,8 +8,8 @@ env:
   REPO_TAG: v24.10.3
   CONF_FILE: wr30u/wr30u.config
   CONF_FILE2: wr30u/02_network
-  DTSI_FILE1: wr30u/mt7981.dtsi
-  DTSI_FILE2: wr30u/mt7981b-xiaomi-mi-router-common.dtsi
+  DTSI_FILE1: wr30u/mt7981-gsw.dtsi
+  DTSI_FILE2: wr30u/mt7981b-xiaomi-mi-router-common-gsw.dtsi
   DTSI_FILE3: wr30u/mt7981b-xiaomi-mi-router-wr30u.dtsi
   DIY_P1_SH: wr30u/diy-part1.sh
   DIY_P2_SH: wr30u/diy-part2.sh
