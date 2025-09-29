@@ -36,12 +36,13 @@ jobs:
     - name: Clone source code
       run: |
        git clone $REPO_URL -b $REPO_TAG $GITHUB_WORKSPACE/openwrt
-       git clone https://github.com/padavanonly/immortalwrt-mt798x-6.6.git $GITHUB_WORKSPACE/immortalwrt
+       git clone https://git01.mediatek.com/openwrt/feeds/mtk-openwrt-feeds $GITHUB_WORKSPACE/mtk
 #-----------------------------------------------#
     - name: Load custom feeds
       run:  |
-        rm -rf openwrt/target/linux/mediatek/*
-        cp -rf immortalwrt/target/linux/mediatek/* openwrt/target/linux/mediatek/
+        cp -rf mtk/autobuild/unified/filogic/24.10/files/target/linux/mediatek/files-6.6/drivers/net/phy/mtk openwrt/target/linux/mediatek/files-6.6/drivers/net/phy/
+        cp -rf mtk/autobuild/unified/filogic/24.10/files/target/linux/mediatek/patches-6.6/999-2755-add-mt753x-gsw-support.patch openwrt/target/linux/mediatek/patches-6.6/
+        echo CONFIG_MT753X_GSW=y>> openwrt/target/linux/mediatek/filogic/config-6.6
         [ -e $CONF_FILE ] && cp -f $CONF_FILE openwrt/.config
         [ -e $CONF_FILE2 ] && cp -f $CONF_FILE2 openwrt/target/linux/mediatek/filogic/base-files/etc/board.d/
         [ -e $DTSI_FILE1 ] && cp -f $DTSI_FILE1 openwrt/target/linux/mediatek/files-6.6/arch/arm64/boot/dts/mediatek/
