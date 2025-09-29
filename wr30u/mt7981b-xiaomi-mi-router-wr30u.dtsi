@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later OR MIT
 
 /dts-v1/;
-#include "mt7981b-xiaomi-mi-router-common.dtsi"
+#include "mt7981b-xiaomi-mi-router-common-gsw.dtsi"
 
 &gmac0 {
 	nvmem-cell-names = "mac-address";
