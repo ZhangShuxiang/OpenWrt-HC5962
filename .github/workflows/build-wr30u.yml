@@ -49,7 +49,7 @@ jobs:
         [ -e $DTSI_FILE2 ] && cp -f $DTSI_FILE2 openwrt/target/linux/mediatek/dts/
         [ -e $DTSI_FILE3 ] && cp -f $DTSI_FILE3 openwrt/target/linux/mediatek/dts/
         rm openwrt/target/linux/generic/hack-6.6/780-usb-net-MeigLink_modem_support.patch*
-        echo d024313b339f6a16c640db924eb57f35> openwrt/.vermagic
+        curl -s https://downloads.openwrt.org/releases/24.10.3/targets/mediatek/filogic/kmods/ | grep -oE '[a-f0-9]{32}' | head -1> openwrt/.vermagic
         cd openwrt && chmod +x $GITHUB_WORKSPACE/$DIY_P1_SH && $GITHUB_WORKSPACE/$DIY_P1_SH
 #-----------------------------------------------#
     - name: Update feeds
