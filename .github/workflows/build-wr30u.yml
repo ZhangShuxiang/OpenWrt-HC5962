@@ -6,8 +6,9 @@ on:
 env:
   REPO_URL: https://github.com/openwrt/openwrt.git
   REPO_TAG: v24.10.3
-  CONF_FILE: wr30u/wr30u.config
+  CONF_FILE1: wr30u/wr30u.config
   CONF_FILE2: wr30u/02_network
+  CONF_FILE3: wr30u/99-custom
   DTSI_FILE1: wr30u/mt7981-gsw.dtsi
   DTSI_FILE2: wr30u/mt7981b-xiaomi-mi-router-common-gsw.dtsi
   DTSI_FILE3: wr30u/mt7981b-xiaomi-mi-router-wr30u.dtsi
@@ -43,8 +44,9 @@ jobs:
         cp -rf mtk/autobuild/unified/filogic/24.10/files/target/linux/mediatek/files-6.6/drivers/net/phy/mtk openwrt/target/linux/mediatek/files-6.6/drivers/net/phy/
         cp -rf mtk/autobuild/unified/filogic/24.10/files/target/linux/mediatek/patches-6.6/999-2755-add-mt753x-gsw-support.patch openwrt/target/linux/mediatek/patches-6.6/
         echo CONFIG_MT753X_GSW=y>> openwrt/target/linux/mediatek/filogic/config-6.6
-        [ -e $CONF_FILE ] && cp -f $CONF_FILE openwrt/.config
+        [ -e $CONF_FILE1 ] && cp -f $CONF_FILE1 openwrt/.config
         [ -e $CONF_FILE2 ] && cp -f $CONF_FILE2 openwrt/target/linux/mediatek/filogic/base-files/etc/board.d/
+        [ -e $CONF_FILE3 ] && cp -f $CONF_FILE3 openwrt/package/base-files/files/etc/uci-defaults/
         [ -e $DTSI_FILE3 ] && cp -f $DTSI_FILE3 openwrt/target/linux/mediatek/dts/
         #rm openwrt/target/linux/generic/hack-6.6/780-usb-net-MeigLink_modem_support.patch*
         curl -s https://downloads.openwrt.org/releases/24.10.3/targets/mediatek/filogic/kmods/ | grep -oE '[a-f0-9]{32}' | head -1> openwrt/.vermagic
