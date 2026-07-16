@@ -51,13 +51,13 @@ jobs:
 #-----------------------------------------------#
     - name: Load custom configuration
       run: |
-        if [ -e "${{ env.CONF_FILE1 }}" ]; then
-          cp "${{ env.CONF_FILE1 }}" openwrt/.config
+        if [ -e ${{ env.CONF_FILE1 }} ]; then
+          cp ${{ env.CONF_FILE1 }} openwrt/.config
         fi
 
-        if [ -e "${{ env.CONF_FILE2 }}" ]; then
+        if [ -e ${{ env.CONF_FILE2 }} ]; then
           mkdir -p openwrt/files/etc/uci-defaults
-          cp "${{ env.CONF_FILE2 }}" openwrt/files/etc/uci-defaults/
+          cp ${{ env.CONF_FILE2 }} openwrt/files/etc/uci-defaults/
         fi
 
         HASH=$(curl -s "https://downloads.openwrt.org/releases/${{ env.REPO_TAG }}/targets/mediatek/filogic/openwrt-${{ env.REPO_TAG }}-mediatek-filogic.manifest" | grep "^kernel - " | sed -n 's/.*~\([a-f0-9]\{32\}\)-r.*/\1/p')
