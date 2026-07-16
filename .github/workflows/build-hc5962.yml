@@ -80,9 +80,9 @@ jobs:
         rm -rf openwrt/bin/targets/mediatek/filogic/packages
 #-----------------------------------------------#
     - name: Upload firmware directory
-      uses: actions/upload-artifact@v4  # 修复：使用具体版本号
+      uses: actions/upload-artifact@v4
       with:
-        name: OpenWrt_firmware_HiWiFi_HC5962
+        name: OpenWrt_firmware_HiWiFi_HC5962_${{ github.sha }}
         path: openwrt/bin/targets/mediatek/filogic
 #-----------------------------------------------#
     - name: Upload firmware to release
@@ -90,7 +90,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: OpenWrt_firmware_HiWiFi_HC5962_${{ github.ref_name }}
+        tag_name: OpenWrt_firmware_HiWiFi_HC5962_${{ github.sha }}
         files: openwrt/bin/targets/mediatek/filogic/*
         body: |
           ## Build HC5962
