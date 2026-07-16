@@ -46,7 +46,7 @@ jobs:
       run: |
         cd openwrt
         make defconfig
-        madir -p configfile
+        mkdir -p configfile
         cp .config configfile/test.config
 #-----------------------------------------------#
     - name: Upload firmware directory
