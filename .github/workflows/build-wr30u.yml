@@ -3,16 +3,14 @@ name: Build WR30U
 on:
   workflow_dispatch:
 #------------------#
-env:
-  REPO_TAG: 25.12.5
-  CONF_FILE1: main/wr30u/wr30u.config
-  CONF_FILE2: main/wr30u/99-custom
-#------------------#
 jobs:
   build:
     runs-on: ubuntu-24.04
     env:
       DEBIAN_FRONTEND: noninteractive
+      REPO_TAG: 25.12.5
+      CONF_FILE1: main/wr30u/wr30u.config
+      CONF_FILE2: main/wr30u/99-custom
     steps:
 #-----------------------------------------------#
     - name: Initialization environment
