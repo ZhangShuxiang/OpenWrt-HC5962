@@ -35,6 +35,8 @@ make defconfig
 make download
 make
 -------------
+apk-mbedtls base-files busybox ca-bundle ca-certificates dnsmasq-full dropbear fdisk firewall4 fitblk fstools kmod-bonding kmod-crypto-hw-safexcel kmod-gpio-button-hotplug kmod-leds-gpio kmod-mt7915e kmod-mt7981-firmware kmod-mtd-rw kmod-nft-offload kmod-vrf libc libgcc libustream-mbedtls logd luci luci-compat luci-i18n-attendedsysupgrade-zh-cn luci-i18n-base-zh-cn luci-i18n-filemanager-zh-cn luci-i18n-firewall-zh-cn luci-i18n-package-manager-zh-cn luci-i18n-ttyd-zh-cn luci-i18n-upnp-zh-cn luci-i18n-wol-zh-cn luci-lib-base luci-proto-openconnect luci-proto-wireguard mt7981-wo-firmware mtd netifd nftables odhcp6c odhcpd-ipv6only ppp ppp-mod-pppoe procd-ujail uboot-envtools uci uclient-fetch urandom-seed urngd wpad-mbedtls
+-------------
 清理掉包括已编译好：固件、软件包
 make clean
 清理掉包括已编译好：交叉编译工具、固件、软件包
