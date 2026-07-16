@@ -62,7 +62,7 @@ jobs:
 
         HASH=$(curl -s "https://downloads.openwrt.org/releases/${{ env.REPO_TAG }}/targets/mediatek/filogic/openwrt-${{ env.REPO_TAG }}-mediatek-filogic.manifest" | grep "^kernel - " | sed -n 's/.*~\([a-f0-9]\{32\}\)-r.*/\1/p')
         if [ -n "$HASH" ]; then
-          sed -i "s/grep.*vermagic/echo $HASH > \$(LINUX_DIR)\/.vermagic/g" include/kernel-defaults.mk 
+          sed -i "s/grep.*vermagic/echo $HASH > \$(LINUX_DIR)\/.vermagic/g" openwrt/include/kernel-defaults.mk 
         fi
 #-----------------------------------------------#
     - name: Download package
