@@ -45,7 +45,7 @@ jobs:
       id: package
       run: |
         cd openwrt
-        make defconfig
+        make oldconfig
         mkdir -p configfile
         cp .config configfile/test.config
 #-----------------------------------------------#
