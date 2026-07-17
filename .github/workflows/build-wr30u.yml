@@ -70,7 +70,7 @@ jobs:
     - name: Upload firmware directory
       uses: actions/upload-artifact@v5
       with:
-        name: OpenWrt_firmware_WR30U_${{ github.sha }}
+        name: OpenWrt_${{ env.REPO_TAG }}_WR30U_${{ github.sha }}
         path: openwrt/bin/targets/mediatek/filogic
 #-----------------------------------------------#
     - name: Upload firmware to release
@@ -78,6 +78,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: OpenWrt_firmware_WR30U_${{ github.sha }}
+        tag_name: OpenWrt_${{ env.REPO_TAG }}_WR30U_${{ github.sha }}
         files: openwrt/bin/targets/mediatek/filogic/*
 #-----------------------------------------------#
