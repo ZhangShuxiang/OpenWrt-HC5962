@@ -1,56 +1,57 @@
-#
-# Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
-#
-# This is free software, licensed under the MIT License.
-# See /LICENSE for more information.
-#
-# https://github.com/P3TERX/Actions-OpenWrt
-# Description: Build OpenWrt using GitHub Actions
-#
-
 name: Build X64
-
+#------------------#
 on:
   workflow_dispatch:
-
-env:
-  REPO_URL: https://github.com/openwrt/openwrt.git
-  REPO_TAG: v22.03.0-rc4
-  CONF_FILE: x64/x64.config
-  DIY_P1_SH: x64/diy-part1.sh
-  DIY_P2_SH: x64/diy-part2.sh
 #------------------#
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
+    env:
+      DEBIAN_FRONTEND: noninteractive
+      REPO_TAG: 25.12.5
+      CONF_FILE1: main/x64/x64a.config
+      CONF_FILE2: main/x64/99-custom
     steps:
 #-----------------------------------------------#
-    - name: Checkout
-      uses: actions/checkout@main
-#-----------------------------------------------#
     - name: Initialization environment
-      env:
-        DEBIAN_FRONTEND: noninteractive
       run: |
         sudo -E apt -qqy update
-        sudo -E apt -qqy install build-essential gawk gcc-multilib flex git gettext libncurses5-dev libssl-dev python3-distutils zlib1g-dev unzip
+        sudo -E apt -qqy install build-essential clang flex bison g++ gawk gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev python3-setuptools rsync swig unzip zlib1g-dev file wget
 #-----------------------------------------------#
-    - name: Clone source code
-      run: git clone $REPO_URL -b $REPO_TAG $GITHUB_WORKSPACE/openwrt
+    - name: Checkout main
+      uses: actions/checkout@v5
+      with:
+        path: main
+
+    - name: Checkout openwrt
+      uses: actions/checkout@v5
+      with:
+        repository: openwrt/openwrt
+        ref: v${{ env.REPO_TAG }}
+        path: openwrt
 #-----------------------------------------------#
-    - name: Load custom feeds
-      run: cd openwrt && chmod +x $GITHUB_WORKSPACE/$DIY_P1_SH && $GITHUB_WORKSPACE/$DIY_P1_SH
-#-----------------------------------------------#
-    - name: Update feeds
-      run: cd openwrt && ./scripts/feeds update -a
-#-----------------------------------------------#
-    - name: Install feeds
-      run: cd openwrt && ./scripts/feeds install -a
+    - name: Update Install feeds
+      run: |
+        cd openwrt
+        echo 'src-git rtp2httpd https://github.com/stackia/rtp2httpd.git' >>feeds.conf.default
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
 #-----------------------------------------------#
     - name: Load custom configuration
       run: |
-        [ -e $CONF_FILE ] && cp $CONF_FILE openwrt/.config
-        cd openwrt && chmod +x $GITHUB_WORKSPACE/$DIY_P2_SH && $GITHUB_WORKSPACE/$DIY_P2_SH
+        if [ -e ${{ env.CONF_FILE1 }} ]; then
+          cp ${{ env.CONF_FILE1 }} openwrt/.config
+        fi
+
+        if [ -e ${{ env.CONF_FILE2 }} ]; then
+          mkdir -p openwrt/files/etc/uci-defaults
+          cp ${{ env.CONF_FILE2 }} openwrt/files/etc/uci-defaults/
+        fi
+
+        HASH=$(curl -s "https://downloads.openwrt.org/releases/${{ env.REPO_TAG }}/targets/x86/64/openwrt-${{ env.REPO_TAG }}-x86-64.manifest" | grep "^kernel - " | sed -n 's/.*~\([a-f0-9]\{32\}\)-r.*/\1/p')
+        if [ -n "$HASH" ]; then
+          sed -i "s/grep.*vermagic/echo $HASH > \$(LINUX_DIR)\/.vermagic/g" openwrt/include/kernel-defaults.mk 
+        fi
 #-----------------------------------------------#
     - name: Download package
       id: package
@@ -63,25 +64,20 @@ jobs:
       id: compile
       run: |
         cd openwrt
-        echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
-        echo "::set-output name=status::success"
-        grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
-        [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
-        echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
-#-----------------------------------------------#
-    - name: Organize files
-      id: organize
-      run: |
-        cd openwrt/bin/targets/*/*
-        rm -rf packages
-        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        echo "::set-output name=status::success"
+        rm -rf bin/targets/x86/64/packages
 #-----------------------------------------------#
     - name: Upload firmware directory
-      uses: actions/upload-artifact@main
-      if: steps.organize.outputs.status == 'success' && !cancelled()
+      uses: actions/upload-artifact@v5
       with:
-        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-        path: ${{ env.FIRMWARE }}
+        name: OpenWrt_firmware_X64_${{ github.sha }}
+        path: openwrt/bin/targets/x86/64
+#-----------------------------------------------#
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@v3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: OpenWrt_firmware_X64_${{ github.sha }}
+        files: openwrt/bin/targets/x86/64/*
 #-----------------------------------------------#
