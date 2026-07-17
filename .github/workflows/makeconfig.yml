@@ -43,7 +43,6 @@ jobs:
         fi
 #-----------------------------------------------#
     - name: Download package
-      id: package
       run: |
         cd openwrt
         make defconfig
@@ -51,7 +50,7 @@ jobs:
         cp .config configfile/test.config
 #-----------------------------------------------#
     - name: Upload firmware directory
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: OpenWrt_${{ github.sha }}
         path: openwrt/configfile
