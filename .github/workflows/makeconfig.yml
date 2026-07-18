@@ -33,6 +33,7 @@ jobs:
         cd openwrt
         echo 'src-git rtp2httpd https://github.com/stackia/rtp2httpd.git' >>feeds.conf.default
         echo 'src-git taskplan https://github.com/sirpdboy/luci-app-ddns-go.git' >>feeds.conf.default
+        echo 'src-git nikki https://github.com/nikkinikki-org/OpenWrt-nikki.git;main' >>feeds.conf.default
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 #-----------------------------------------------#
