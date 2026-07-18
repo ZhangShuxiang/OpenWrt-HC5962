@@ -8,7 +8,6 @@ uci del system.ntp.server
 uci add_list system.ntp.server='ntp.ntsc.ac.cn'
 uci add_list system.ntp.server='cn.pool.ntp.org'
 uci add_list system.ntp.server='time.windows.com'
-uci add_list system.ntp.server='cn.ntp.org.cn'
 uci commit system
 
 uci set network.globals.ula_prefix='fd00::/48'
