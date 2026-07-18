@@ -1,0 +1,48 @@
+(echo Aa56781234; sleep 1; echo Aa56781234) | passwd > /dev/null
+# MAC=$(cat /sys/class/net/br-lan/address | sed 's/://g') && (echo "$MAC"; sleep 1; echo "$MAC") | passwd > /dev/null 2>&1
+sed -i 's_https\?://downloads.openwrt.org_https://mirrors.tuna.tsinghua.edu.cn/openwrt_' /etc/apk/repositories.d/distfeeds.list
+
+uci set system.cfg01e48a.zonename='Asia/Shanghai'
+uci set system.cfg01e48a.timezone='CST-8'
+uci del system.ntp.server
+uci add_list system.ntp.server='ntp.ntsc.ac.cn'
+uci add_list system.ntp.server='cn.pool.ntp.org'
+uci add_list system.ntp.server='time.windows.com'
+uci commit system
+
+uci set network.globals.ula_prefix='fd00::/48'
+uci commit network
+
+uci set wireless.@wifi-device[0].disabled='0'
+uci set wireless.@wifi-device[0].country='US'
+uci set wireless.@wifi-device[0].channel='5'
+uci set wireless.@wifi-device[1].disabled='0'
+uci set wireless.@wifi-device[1].country='US'
+uci set wireless.@wifi-device[1].channel='44'
+uci commit wireless
+
+uci set wireless.@wifi-iface[0].disabled='0'
+uci set wireless.@wifi-iface[0].encryption='sae-mixed'
+uci set wireless.@wifi-iface[0].ssid="OpenWrt"
+uci set wireless.@wifi-iface[0].key="56781234"
+uci set wireless.@wifi-iface[1].disabled='0'
+uci set wireless.@wifi-iface[1].encryption='sae-mixed'
+uci set wireless.@wifi-iface[1].ssid="OpenWrt"
+uci set wireless.@wifi-iface[1].key="56781234"
+uci commit wireless
+
+uci set firewall.cfg01e63d.flow_offloading='1'
+uci set firewall.cfg01e63d.flow_offloading_hw='1'
+uci commit firewall
+
+uci del upnpd.config.enable_upnp
+uci del upnpd.config.enable_natpmp
+uci del upnpd.config.secure_mode
+uci del upnpd.config.log_output
+uci set upnpd.config.enabled='1'
+uci commit upnpd
+
+uci set attendedsysupgrade.client.login_check_for_upgrades='0'
+uci commit attendedsysupgrade
+
+echo "All done!"
