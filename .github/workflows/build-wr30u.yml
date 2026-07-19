@@ -85,6 +85,7 @@ jobs:
         API_URL=https://downloads.openwrt.org/releases/${{ inputs.version }}/targets/${MK_TARGET}/openwrt-${{ inputs.version }}-${MK_TARGET//\//-}.manifest
         echo "Fetching: $API_URL"
         HASH=$(curl -s "$API_URL" | grep "^kernel - " | sed -n 's/.*~\([a-f0-9]\{32\}\)-r.*/\1/p')
+        echo "Fetching: $HASH"
 
         if [ -n "$HASH" ]; then
           sed -i "s/grep.*vermagic/echo $HASH > \$(LINUX_DIR)\/.vermagic/g" openwrt/include/kernel-defaults.mk 
