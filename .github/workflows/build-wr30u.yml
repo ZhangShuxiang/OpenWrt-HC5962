@@ -59,28 +59,31 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 #-----------------------------------------------#
+    - name: Load custom env
+      run: |
+        if [ "${{ inputs.devices }}" == "wr30u" ]; then
+          echo "MK_TARGET=mediatek/filogic" >> $GITHUB_ENV
+        elif [ "${{ inputs.devices }}" == "hc5962" ]; then
+          echo "MK_TARGET=ramips/mt7621" >> $GITHUB_ENV
+        elif [ "${{ inputs.devices }}" == "neo2" ]; then
+          echo "MK_TARGET=sunxi/cortexa53" >> $GITHUB_ENV
+        elif [ "${{ inputs.devices }}" == "x64" ]; then
+          echo "MK_TARGET=x86/64" >> $GITHUB_ENV
+        fi
+#-----------------------------------------------#
     - name: Load custom configuration
       run: |
-        if [ -e ${{ env.CONF_FILE1 }} ]; then
+        if [ -e "${{ env.CONF_FILE1 }}" ]; then
           cp ${{ env.CONF_FILE1 }} openwrt/.config
         fi
 
-        if [ -e ${{ env.CONF_FILE2 }} ]; then
+        if [ -e "${{ env.CONF_FILE2 }}" ]; then
           mkdir -p openwrt/files/etc/uci-defaults
           cp ${{ env.CONF_FILE2 }} openwrt/files/etc/uci-defaults/
         fi
 
-        if [ "${{ inputs.devices }}" == "wr30u" ]; then
-          echo "MK_TARGET=mediatek/filogic >> $GITHUB_ENV
-        elif [ "${{ inputs.devices }}" == "hc5962" ]; then
-          echo "MK_TARGET=ramips/mt7621 >> $GITHUB_ENV
-        elif [ "${{ inputs.devices }}" == "neo2" ]; then
-          echo "MK_TARGET=sunxi/cortexa53 >> $GITHUB_ENV
-        elif [ "${{ inputs.devices }}" == "x64" ]; then
-          echo "MK_TARGET=x86/64 >> $GITHUB_ENV
-        fi
-
         API_URL=https://downloads.openwrt.org/releases/${{ inputs.version }}/targets/${MK_TARGET}/openwrt-${{ inputs.version }}-${MK_TARGET//\//-}.manifest
+        echo "Fetching: $API_URL"
         HASH=$(curl -s "$API_URL" | grep "^kernel - " | sed -n 's/.*~\([a-f0-9]\{32\}\)-r.*/\1/p')
 
         if [ -n "$HASH" ]; then
