@@ -101,13 +101,13 @@ jobs:
       run: |
         cd openwrt
         make -j$(nproc) || make -j1 || make -j1 V=s
-        rm -rf bin/targets/${MK_TARGET}/packages
+        rm -rf bin/targets/${{ env.MK_TARGET }}/packages
 #-----------------------------------------------#
     - name: Upload firmware directory
       uses: actions/upload-artifact@v6
       with:
         name: OpenWrt_${{ inputs.version }}_${{ inputs.devices }}_${{ github.sha }}
-        path: openwrt/bin/targets/${MK_TARGET}
+        path: openwrt/bin/targets/${{ env.MK_TARGET }}
 #-----------------------------------------------#
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v3
@@ -115,5 +115,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: OpenWrt_${{ inputs.version }}_${{ inputs.devices }}_${{ github.sha }}
-        files: openwrt/bin/targets/${MK_TARGET}/*
+        files: openwrt/bin/targets/${{ env.MK_TARGET }}/*
 #-----------------------------------------------#
