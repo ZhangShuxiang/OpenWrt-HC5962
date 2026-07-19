@@ -74,12 +74,12 @@ jobs:
     - name: Load custom configuration
       run: |
         if [ -e "${{ env.CONF_FILE1 }}" ]; then
-          cp ${{ env.CONF_FILE1 }} openwrt/.config
+          cp "${{ env.CONF_FILE1 }}" openwrt/.config
         fi
 
         if [ -e "${{ env.CONF_FILE2 }}" ]; then
           mkdir -p openwrt/files/etc/uci-defaults
-          cp ${{ env.CONF_FILE2 }} openwrt/files/etc/uci-defaults/
+          cp "${{ env.CONF_FILE2 }}" openwrt/files/etc/uci-defaults/
         fi
 
         API_URL=https://downloads.openwrt.org/releases/${{ inputs.version }}/targets/${MK_TARGET}/openwrt-${{ inputs.version }}-${MK_TARGET//\//-}.manifest
@@ -88,7 +88,7 @@ jobs:
         echo "Fetching: $HASH"
 
         if [ -n "$HASH" ]; then
-          sed -i "s/grep.*vermagic/echo $HASH > \$(LINUX_DIR)\/.vermagic/g" openwrt/include/kernel-defaults.mk 
+          sed -i "s|grep.*vermagic|echo $HASH > \$(LINUX_DIR)/.vermagic|g" openwrt/include/kernel-defaults.mk
         fi
 #-----------------------------------------------#
     - name: Download package
