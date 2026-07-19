@@ -29,33 +29,9 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     env:
-      DEBIAN_FRONTEND: noninteractive
-      REPO_TAG: ${{ inputs.version }}
+      CONF_FILE1: main/${{ inputs.devices }}/${{ inputs.devices }}.config
+      CONF_FILE2: main/${{ inputs.devices }}/99-custom
     steps:
-#-----------------------------------------------#
-    - name: Load custom env
-      run: |
-        if [ "${{ inputs.devices }}" == "wr30u" ]; then
-          echo "CONF_FILE1=main/${{ inputs.devices }}/${{ inputs.devices }}.config" >> $GITHUB_ENV
-          echo "CONF_FILE2=main/${{ inputs.devices }}/99-custom" >> $GITHUB_ENV
-          echo "API_URL=https://downloads.openwrt.org/releases/${{ env.REPO_TAG }}/targets/mediatek/filogic/openwrt-${{ env.REPO_TAG }}-mediatek-filogic.manifest" >> $GITHUB_ENV
-          echo "MK_FILE=bin/targets/mediatek/filogic" >> $GITHUB_ENV
-        elif [ "${{ inputs.devices }}" == "hc5962" ]; then
-          echo "CONF_FILE1=main/${{ inputs.devices }}/${{ inputs.devices }}a.config" >> $GITHUB_ENV
-          echo "CONF_FILE2=main/${{ inputs.devices }}/99-custom" >> $GITHUB_ENV
-          echo "API_URL=https://downloads.openwrt.org/releases/${{ env.REPO_TAG }}/targets/ramips/mt7621/openwrt-${{ env.REPO_TAG }}-ramips-mt7621.manifest" >> $GITHUB_ENV
-          echo "MK_FILE=bin/targets/ramips/mt7621" >> $GITHUB_ENV
-        elif [ "${{ inputs.devices }}" == "neo2" ]; then
-          echo "CONF_FILE1=main/${{ inputs.devices }}/${{ inputs.devices }}a.config" >> $GITHUB_ENV
-          echo "CONF_FILE2=main/${{ inputs.devices }}/99-custom" >> $GITHUB_ENV
-          echo "API_URL=https://downloads.openwrt.org/releases/${{ env.REPO_TAG }}/targets/sunxi/cortexa53/openwrt-${{ env.REPO_TAG }}-sunxi-cortexa53.manifest" >> $GITHUB_ENV
-          echo "MK_FILE=bin/targets/sunxi/cortexa53" >> $GITHUB_ENV
-        elif [ "${{ inputs.devices }}" == "x64" ]; then
-          echo "CONF_FILE1=main/${{ inputs.devices }}/${{ inputs.devices }}a.config" >> $GITHUB_ENV
-          echo "CONF_FILE2=main/${{ inputs.devices }}/99-custom" >> $GITHUB_ENV
-          echo "API_URL=https://downloads.openwrt.org/releases/${{ env.REPO_TAG }}/targets/x86/64/openwrt-${{ env.REPO_TAG }}-x86-64.manifest" >> $GITHUB_ENV
-          echo "MK_FILE=bin/targets/x86/64" >> $GITHUB_ENV
-        fi
 #-----------------------------------------------#
     - name: Initialization environment
       run: |
@@ -71,7 +47,7 @@ jobs:
       uses: actions/checkout@v5
       with:
         repository: openwrt/openwrt
-        ref: v${{ env.REPO_TAG }}
+        ref: v${{ inputs.version }}
         path: openwrt
 #-----------------------------------------------#
     - name: Update Install feeds
@@ -94,7 +70,19 @@ jobs:
           cp ${{ env.CONF_FILE2 }} openwrt/files/etc/uci-defaults/
         fi
 
-        HASH=$(curl -s "${{ env.API_URL }}" | grep "^kernel - " | sed -n 's/.*~\([a-f0-9]\{32\}\)-r.*/\1/p')
+        if [ "${{ inputs.devices }}" == "wr30u" ]; then
+          echo "MK_TARGET=mediatek/filogic >> $GITHUB_ENV
+        elif [ "${{ inputs.devices }}" == "hc5962" ]; then
+          echo "MK_TARGET=ramips/mt7621 >> $GITHUB_ENV
+        elif [ "${{ inputs.devices }}" == "neo2" ]; then
+          echo "MK_TARGET=sunxi/cortexa53 >> $GITHUB_ENV
+        elif [ "${{ inputs.devices }}" == "x64" ]; then
+          echo "MK_TARGET=x86/64 >> $GITHUB_ENV
+        fi
+
+        API_URL=https://downloads.openwrt.org/releases/${{ inputs.version }}/targets/${MK_TARGET}/openwrt-${{ inputs.version }}-${MK_TARGET//\//-}.manifest
+        HASH=$(curl -s "$API_URL" | grep "^kernel - " | sed -n 's/.*~\([a-f0-9]\{32\}\)-r.*/\1/p')
+
         if [ -n "$HASH" ]; then
           sed -i "s/grep.*vermagic/echo $HASH > \$(LINUX_DIR)\/.vermagic/g" openwrt/include/kernel-defaults.mk 
         fi
@@ -109,19 +97,19 @@ jobs:
       run: |
         cd openwrt
         make -j$(nproc) || make -j1 || make -j1 V=s
-        rm -rf ${{ env.MK_FILE }}/packages
+        rm -rf bin/targets/${MK_TARGET}/packages
 #-----------------------------------------------#
     - name: Upload firmware directory
       uses: actions/upload-artifact@v6
       with:
-        name: OpenWrt_${{ env.REPO_TAG }}_${{ inputs.devices }}_${{ github.sha }}
-        path: openwrt/${{ env.MK_FILE }}
+        name: OpenWrt_${{ inputs.version }}_${{ inputs.devices }}_${{ github.sha }}
+        path: openwrt/bin/targets/${MK_TARGET}
 #-----------------------------------------------#
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v3
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: OpenWrt_${{ env.REPO_TAG }}_${{ inputs.devices }}_${{ github.sha }}
-        files: openwrt/${{ env.MK_FILE }}/*
+        tag_name: OpenWrt_${{ inputs.version }}_${{ inputs.devices }}_${{ github.sha }}
+        files: openwrt/bin/targets/${MK_TARGET}/*
 #-----------------------------------------------#
