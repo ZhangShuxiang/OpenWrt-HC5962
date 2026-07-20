@@ -1,0 +1,20 @@
+(echo Aa56781234; sleep 1; echo Aa56781234) | passwd > /dev/null
+# MAC=$(cat /sys/class/net/br-lan/address | sed 's/://g') && (echo "$MAC"; sleep 1; echo "$MAC") | passwd > /dev/null 2>&1
+sed -i 's_https\?://downloads.openwrt.org_https://mirrors.tuna.tsinghua.edu.cn/openwrt_' /etc/apk/repositories.d/distfeeds.list
+sed -i -E '/rtp2httpd|taskplan|nikki/d' /etc/apk/repositories.d/distfeeds.list
+
+uci set system.cfg01e48a.zonename='Asia/Shanghai'
+uci set system.cfg01e48a.timezone='CST-8'
+uci del system.ntp.server
+uci add_list system.ntp.server='ntp.ntsc.ac.cn'
+uci add_list system.ntp.server='cn.pool.ntp.org'
+uci add_list system.ntp.server='time.windows.com'
+uci commit system
+
+uci set network.globals.ula_prefix='fd00::/48'
+uci commit network
+
+uci set attendedsysupgrade.client.login_check_for_upgrades='0'
+uci commit attendedsysupgrade
+
+echo "All done!"
