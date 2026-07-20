@@ -65,9 +65,9 @@ jobs:
           echo "MK_TARGET=mediatek/filogic" >> $GITHUB_ENV
         elif [ "${{ inputs.devices }}" == "hc5962" ]; then
           echo "MK_TARGET=ramips/mt7621" >> $GITHUB_ENV
-          sed -i 's|ucidef_set_interface_lan \"eth0\"|ucidef_set_interface_wan \"eth0\"|g' openwrt/target/linux/sunxi/base-files/etc/board.d/02_network
         elif [ "${{ inputs.devices }}" == "neo2" ]; then
           echo "MK_TARGET=sunxi/cortexa53" >> $GITHUB_ENV
+          sed -i 's|ucidef_set_interface_lan \"eth0\"|ucidef_set_interface_wan \"eth0\"|g' openwrt/target/linux/sunxi/base-files/etc/board.d/02_network
         elif [ "${{ inputs.devices }}" == "x64" ]; then
           echo "MK_TARGET=x86/64" >> $GITHUB_ENV
         fi
